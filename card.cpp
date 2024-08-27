@@ -81,19 +81,51 @@ void printDeck(Deck& deck)
     }
 }
 
+void playGame(Deck* deck, Player* players) {
+int i, j, c = 0; /* counters */
+int rounds = DECK_SIZE / PLAYER_NUM;
+int roundWinner;
+Card* currentCard;
+cout<<"Start of the game!\n";
+for (i = 0; i < rounds; i++) {
+roundWinner = 0;
+currentCard = &(deck->cards[c]);
+cout << "Round " << i << "\n";
+for (j = 0; j < PLAYER_NUM; j++) {
+cout<<players[j].name<<" plays "<<getCard(deck->cards[c])<<"\n";
+if ((currentCard->face < deck->cards[c].face) ||
+(currentCard->face == deck->cards[c].face
+&& currentCard->suit < deck->cards[c].suit))
+roundWinner = j;
+c++;
+}
+players[roundWinner].score++;
+cout << "Round Winner ["<< players[roundWinner].name<<"]\tTotal:["<<
+players[roundWinner].score<<"]\n\n";
+}
+
+int gameWinner = 0;
+int winnerscore = players[0].score;
+for (i = 1; i < PLAYER_NUM; i++) {
+if (players[i].score > winnerscore) {
+winnerscore = players[i].score;
+gameWinner = i;
+}
+}
+cout << "!!!...and the winner is " << players[gameWinner].name << " with " <<
+players[gameWinner].score << " points!!!\n";
+cout << "End of the game!\n\n";
+}
+
+
 int main()
 {
     
-    // cout << "Enter number of players :";
-    // // cin >> noPlayers;
-    // cout << '\n' <<"Enter name of players: ";
-    // cin >> name;
     Player players[PLAYER_NUM];
     for (int i{0}; i < PLAYER_NUM; i++)
     {
         players[i].name = "player " + to_string(i + 1);
         players[i].score = 0;
-
     }
     Deck deck;
     
@@ -102,6 +134,7 @@ int main()
     shuffleDeck(&deck);
     dealDeck(&deck, players);
     // printDeck(deck);
+    playGame(&deck, players);
 
 
     
